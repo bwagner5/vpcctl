@@ -19,13 +19,20 @@ import (
 	"os"
 
 	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/samber/lo"
 	"github.com/spf13/cobra"
 
 	"github.com/bwagner5/vpcctl/pkg/vpc"
 )
 
+const (
+	OutputJSON   = "json"
+	OutputEKSCTL = "eksctl"
+)
+
 type GetOptions struct {
-	Name string `yaml:"name"`
+	Name   string `yaml:"name"`
+	Output string `yaml:"output"`
 }
 
 var (
@@ -56,12 +63,18 @@ var (
 				fmt.Println(err)
 				os.Exit(2)
 			}
-			fmt.Println(PrettyEncode(vpcDetails))
+			switch opts.Output {
+			case OutputEKSCTL:
+				fmt.Println(lo.Must(vpcDetails.OutputEKSCTL()))
+			case OutputJSON:
+				fmt.Println(PrettyEncode(vpcDetails))
+			}
 		},
 	}
 )
 
 func init() {
 	cmdGet.Flags().StringVarP(&getOpts.Name, "name", "n", "", "Name of the VPC")
+	cmdGet.Flags().StringVarP(&getOpts.Output, "output", "o", OutputJSON, "Output format")
 	rootCmd.AddCommand(cmdGet)
 }

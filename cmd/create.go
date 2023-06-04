@@ -27,9 +27,10 @@ import (
 )
 
 type CreateOptions struct {
-	Name    string          `yaml:"name"`
-	CIDR    string          `yaml:"cidr"`
-	Subnets []SubnetOptions `yaml:"subnets"`
+	Name    string            `yaml:"name"`
+	CIDR    string            `yaml:"cidr"`
+	Subnets []SubnetOptions   `yaml:"subnets"`
+	Tags    map[string]string `yaml:"tags"`
 }
 
 type SubnetOptions struct {
@@ -75,6 +76,7 @@ func init() {
 	//nolint:gosec // we don't need to use crypto/rand here for a default name
 	cmdCreate.Flags().StringVarP(&createOpts.Name, "name", "n", fmt.Sprintf("vpcctl-generated-%d", rand.Int()), "Name of the VPC")
 	cmdCreate.Flags().StringVarP(&createOpts.CIDR, "cidr", "c", "10.0.0.0/16", "CIDR of the VPC")
+	cmdCreate.Flags().StringToStringVarP(&createOpts.Tags, "tags", "t", nil, "Additional tags to add to VPC resources")
 	rootCmd.AddCommand(cmdCreate)
 }
 
@@ -82,6 +84,7 @@ func CreateCLIOptsToVPCOpts(opts CreateOptions) vpc.CreateOptions {
 	return vpc.CreateOptions{
 		Name: opts.Name,
 		CIDR: opts.CIDR,
+		Tags: opts.Tags,
 		Subnets: lo.Map(opts.Subnets, func(snOpts SubnetOptions, _ int) vpc.CreateSubnetOptions {
 			return vpc.CreateSubnetOptions{
 				AZ:     snOpts.AZ,

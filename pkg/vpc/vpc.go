@@ -15,6 +15,7 @@ limitations under the License.
 package vpc
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"log"
@@ -23,6 +24,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 	"github.com/aws/aws-sdk-go-v2/service/ec2/types"
 	"github.com/samber/lo"
+	"gopkg.in/yaml.v3"
 )
 
 const (
@@ -47,6 +49,7 @@ type CreateOptions struct {
 	Name    string
 	CIDR    string
 	Subnets []CreateSubnetOptions
+	Tags    map[string]string
 }
 
 type DeleteOptions struct {
@@ -266,4 +269,68 @@ func (v Client) Get(ctx context.Context, opts GetOptions) (*Details, error) {
 		return vpcDetails, err
 	}
 	return vpcDetails, nil
+}
+
+// OutputEKSCTL outputs the vpc configuration yaml block for eksctl
+func (d Details) OutputEKSCTL() (string, error) {
+	// 	vpc:
+	//   id: "vpc-11111"
+	//   subnets:
+	//     private:
+	//       us-west-2a:
+	//           id: "subnet-0ff156e0c4a6d300c"
+	//       us-west-2c:
+	//           id: "subnet-0426fb4a607393184"
+	//     public:
+	//       us-west-2a:
+	//           id: "subnet-0153e560b3129a696"
+	//       us-west-2c:
+	//           id: "subnet-009fa0199ec203c37"
+	type eksctlSubnets struct {
+		Private map[string]map[string]string `yaml:"private"`
+		Public  map[string]map[string]string `yaml:"public"`
+	}
+	type eksctlVPC struct {
+		ID      string        `yaml:"id"`
+		CIDR    string        `yaml:"cidr"`
+		Subnets eksctlSubnets `yaml:"subnets"`
+	}
+
+	type eksctlCFG struct {
+		VPC eksctlVPC `yaml:"vpc"`
+	}
+
+	privateSubnets := lo.Filter(d.Subnets, func(subnet *types.Subnet, _ int) bool { return !*subnet.MapPublicIpOnLaunch })
+	publicSubnets := lo.Filter(d.Subnets, func(subnet *types.Subnet, _ int) bool { return *subnet.MapPublicIpOnLaunch })
+	private := map[string]map[string]string{}
+	public := map[string]map[string]string{}
+
+	for _, subnet := range privateSubnets {
+		private[*subnet.AvailabilityZone] = map[string]string{
+			"id":   *subnet.SubnetId,
+			"cidr": *subnet.CidrBlock,
+		}
+	}
+	for _, subnet := range publicSubnets {
+		public[*subnet.AvailabilityZone] = map[string]string{
+			"id":   *subnet.SubnetId,
+			"cidr": *subnet.CidrBlock,
+		}
+	}
+	var b bytes.Buffer
+	yamlEncoder := yaml.NewEncoder(&b)
+	yamlEncoder.SetIndent(2)
+	if err := yamlEncoder.Encode(eksctlCFG{
+		VPC: eksctlVPC{
+			ID:   *d.VPC.VpcId,
+			CIDR: *d.VPC.CidrBlock,
+			Subnets: eksctlSubnets{
+				Private: private,
+				Public:  public,
+			},
+		},
+	}); err != nil {
+		return "", err
+	}
+	return b.String(), nil
 }

@@ -31,9 +31,13 @@ func (v Client) createVPC(ctx context.Context, opts CreateOptions) (*types.Vpc, 
 		TagSpecifications: []types.TagSpecification{
 			{
 				ResourceType: types.ResourceTypeVpc,
-				Tags: append(defaultTags, []types.Tag{
-					{Key: aws.String("Name"), Value: &opts.Name},
-				}...),
+				Tags: lo.Flatten([][]types.Tag{
+					defaultTags,
+					{
+						{Key: aws.String("Name"), Value: &opts.Name},
+					},
+					v.userTags(opts),
+				}),
 			},
 		},
 	})
@@ -54,10 +58,14 @@ func (v Client) createSubnets(ctx context.Context, vpcID string, opts CreateOpti
 			CidrBlock:        &subnet.CIDR,
 			TagSpecifications: []types.TagSpecification{{
 				ResourceType: types.ResourceTypeSubnet,
-				Tags: append(defaultTags, []types.Tag{
-					{Key: aws.String("Name"), Value: aws.String(fmt.Sprintf("%s-%s-%s", opts.Name, subnet.AZ, subnetType))},
-					{Key: aws.String("Type"), Value: &subnetType},
-				}...),
+				Tags: lo.Flatten([][]types.Tag{
+					defaultTags,
+					{
+						{Key: aws.String("Name"), Value: aws.String(fmt.Sprintf("%s-%s-%s", opts.Name, subnet.AZ, subnetType))},
+						{Key: aws.String("Type"), Value: &subnetType},
+					},
+					v.userTags(opts),
+				}),
 			},
 			},
 		})
@@ -102,9 +110,13 @@ func (v Client) createRouteTables(ctx context.Context, subnets []*types.Subnet, 
 				TagSpecifications: []types.TagSpecification{
 					{
 						ResourceType: types.ResourceTypeRouteTable,
-						Tags: append(defaultTags, []types.Tag{
-							{Key: aws.String("Name"), Value: aws.String(fmt.Sprintf("%s-%s", opts.Name, "PUBLIC"))},
-						}...),
+						Tags: lo.Flatten([][]types.Tag{
+							defaultTags,
+							{
+								{Key: aws.String("Name"), Value: aws.String(fmt.Sprintf("%s-%s", opts.Name, "PUBLIC"))},
+							},
+							v.userTags(opts),
+						}),
 					},
 				},
 			})
@@ -131,9 +143,13 @@ func (v Client) createRouteTables(ctx context.Context, subnets []*types.Subnet, 
 				TagSpecifications: []types.TagSpecification{
 					{
 						ResourceType: types.ResourceTypeRouteTable,
-						Tags: append(defaultTags, []types.Tag{
-							{Key: aws.String("Name"), Value: aws.String(fmt.Sprintf("%s-%s", opts.Name, "PRIVATE"))},
-						}...),
+						Tags: lo.Flatten([][]types.Tag{
+							defaultTags,
+							{
+								{Key: aws.String("Name"), Value: aws.String(fmt.Sprintf("%s-%s", opts.Name, "PRIVATE"))},
+							},
+							v.userTags(opts),
+						}),
 					},
 				},
 			})
@@ -159,9 +175,13 @@ func (v Client) createNATGW(ctx context.Context, subnets []*types.Subnet, routeT
 		TagSpecifications: []types.TagSpecification{
 			{
 				ResourceType: types.ResourceTypeElasticIp,
-				Tags: append(defaultTags, []types.Tag{
-					{Key: aws.String("Name"), Value: &opts.Name},
-				}...),
+				Tags: lo.Flatten([][]types.Tag{
+					defaultTags,
+					{
+						{Key: aws.String("Name"), Value: &opts.Name},
+					},
+					v.userTags(opts),
+				}),
 			},
 		},
 	})
@@ -174,9 +194,13 @@ func (v Client) createNATGW(ctx context.Context, subnets []*types.Subnet, routeT
 		TagSpecifications: []types.TagSpecification{
 			{
 				ResourceType: types.ResourceTypeNatgateway,
-				Tags: append(defaultTags, []types.Tag{
-					{Key: aws.String("Name"), Value: aws.String(opts.Name)},
-				}...),
+				Tags: lo.Flatten([][]types.Tag{
+					defaultTags,
+					{
+						{Key: aws.String("Name"), Value: &opts.Name},
+					},
+					v.userTags(opts),
+				}),
 			},
 		},
 	})
@@ -202,9 +226,13 @@ func (v Client) createIGW(ctx context.Context, vpcID string, routeTable *types.R
 		TagSpecifications: []types.TagSpecification{
 			{
 				ResourceType: types.ResourceTypeInternetGateway,
-				Tags: append(defaultTags, []types.Tag{
-					{Key: aws.String("Name"), Value: aws.String(opts.Name)},
-				}...),
+				Tags: lo.Flatten([][]types.Tag{
+					defaultTags,
+					{
+						{Key: aws.String("Name"), Value: &opts.Name},
+					},
+					v.userTags(opts),
+				}),
 			},
 		},
 	})
@@ -225,4 +253,13 @@ func (v Client) createIGW(ctx context.Context, vpcID string, routeTable *types.R
 		return nil, err
 	}
 	return igwOut.InternetGateway, nil
+}
+
+func (v Client) userTags(opts CreateOptions) []types.Tag {
+	return lo.MapToSlice(opts.Tags, func(k string, v string) types.Tag {
+		return types.Tag{
+			Key:   &k,
+			Value: &v,
+		}
+	})
 }
