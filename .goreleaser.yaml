@@ -1,0 +1,53 @@
+before:
+  hooks:
+    - go mod tidy
+builds:
+  - main: ./cmd/*.go
+    env:
+      - CGO_ENABLED=0
+    targets:
+      - linux_amd64
+      - linux_arm64
+      - darwin_arm64
+      - darwin_amd64
+checksum:
+  name_template: 'checksums.txt'
+snapshot:
+  name_template: "{{ incpatch .Version }}-snapshot"
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+nfpms:
+  - maintainer: Brandon Wagner
+    description: |-
+      a VPC management tool
+    license: Apache-2.0
+    formats:
+      - deb
+      - rpm
+brews:
+  -
+    tap:
+      owner: bwagner5
+      name: homebrew-wagner
+    caveats: "vpcctl --help"
+    homepage: "https://github.com/bwagner5/vpcctl"
+    description: "a VPC management tool"
+    license: "Apache-2.0"
+    test: |
+      system "#{bin}/vpcctl --help"
+dockers:
+  -
+    image_templates:
+    - "ghcr.io/bwagner5/vpcctl:latest"
+    - "ghcr.io/bwagner5/vpcctl:{{ .Tag }}"
+    build_flag_templates:
+    - "--pull"
+    - "--label=org.opencontainers.image.created={{.Date}}"
+    - "--label=org.opencontainers.image.title={{.ProjectName}}"
+    - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+    - "--label=org.opencontainers.image.version={{.Version}}"
+    - "--label=org.opencontainers.image.source=https://github.com/bwagner5/vpcctl"
