@@ -21,6 +21,7 @@ version: ## Output version of local HEAD
 verify: ## Run Verifications like helm-lint and govulncheck
 	govulncheck ./...
 	golangci-lint run
+	cd toolchain && go mod tidy
 
 fmt: ## go fmt the code
 	find . -iname "*.go" -exec go fmt {} \;
