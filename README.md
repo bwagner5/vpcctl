@@ -13,6 +13,62 @@ VPC CTL aims to make creating VPCs a breeze.
 ## Usage:
 
 ```
+Usage:
+  vpcctl [command]
+
+Available Commands:
+  create      Create a VPC
+  delete      Delete a VPC
+  get         Get a VPC
+  list        List VPCs
+  help        Help about any command
+
+Flags:
+  -f, --file string   YAML Config File
+  -h, --help          help for vpcctl
+      --verbose       Verbose output
+      --version       version
+
+Use "vpcctl [command] --help" for more information about a command.
+```
+## Installation:
+
+```
+brew install bwagner5/wagner/vpcctl
+```
+
+Packages, binaries, and archives are published for all major platforms (Mac amd64/arm64 & Linux amd64/arm64):
+
+Debian / Ubuntu:
+
+```
+[[ `uname -m` == "aarch64" ]] && ARCH="arm64" || ARCH="amd64"
+OS=`uname | tr '[:upper:]' '[:lower:]'`
+wget https://github.com/bwagner5/vpcctl/releases/download/v0.0.8/vpcctl_0.0.2_${OS}_${ARCH}.deb
+dpkg --install vpcctl_0.0.2_linux_amd64.deb
+vpcctl --help
+```
+
+RedHat:
+
+```
+[[ `uname -m` == "aarch64" ]] && ARCH="arm64" || ARCH="amd64"
+OS=`uname | tr '[:upper:]' '[:lower:]'`
+rpm -i https://github.com/bwagner5/vpcctl/releases/download/v0.0.8/vpcctl_0.0.2_${OS}_${ARCH}.rpm
+```
+
+Download Binary Directly:
+
+```
+[[ `uname -m` == "aarch64" ]] && ARCH="arm64" || ARCH="amd64"
+OS=`uname | tr '[:upper:]' '[:lower:]'`
+wget -qO- https://github.com/bwagner5/vpcctl/releases/download/v0.0.8/vpcctl_0.0.2_${OS}_${ARCH}.tar.gz | tar xvz
+chmod +x vpcctl
+```
+
+## Examples: 
+
+```
 > vpcctl create --name my-test-vpc
 2023/06/03 15:05:24 Creating VPC test-vpc
 2023/06/03 15:05:25 Created VPC vpc-0503ee50c5024dcb7
@@ -61,6 +117,12 @@ VPC CTL aims to make creating VPCs a breeze.
 ```
 
 ```
+> vpcctl list
+my-test-vpc
+
+```
+
+```
 > vpcctl delete
 2023/06/03 15:08:41 Fetching VPC details for test-vpc
 2023/06/03 15:08:42 Deleting NAT Gateway nat-03e798e0ef0f10359
@@ -73,10 +135,4 @@ VPC CTL aims to make creating VPCs a breeze.
 2023/06/03 15:10:00 Deleted Subnets [subnet-0f72ebf8cd00ce550 subnet-0c1bdb211bd9c8523 subnet-09c56c49f329c985f subnet-0bf5550c42a28a5fc subnet-0bc4fb64c508e78de subnet-08e515bdadefd4a82]
 2023/06/03 15:10:00 Deleting VPC vpc-0503ee50c5024dcb7
 Deleted VPC test-vpc
-```
-
-```
-> vpcctl list
-
-
 ```

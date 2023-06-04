@@ -48,6 +48,9 @@ func main() {
 	rootCmd.PersistentFlags().BoolVar(&globalOpts.Version, "version", false, "version")
 	rootCmd.PersistentFlags().StringVarP(&globalOpts.ConfigFile, "file", "f", "", "YAML Config File")
 
+	rootCmd.AddCommand(&cobra.Command{Use: "completion", Hidden: true})
+	cobra.EnableCommandSorting = false
+
 	lo.Must0(rootCmd.Execute())
 }
 
