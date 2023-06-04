@@ -44,7 +44,7 @@ Debian / Ubuntu:
 ```
 [[ `uname -m` == "aarch64" ]] && ARCH="arm64" || ARCH="amd64"
 OS=`uname | tr '[:upper:]' '[:lower:]'`
-wget https://github.com/bwagner5/vpcctl/releases/download/v0.0.5/vpcctl_0.0.5_${OS}_${ARCH}.deb
+wget https://github.com/bwagner5/vpcctl/releases/download/v0.0.6/vpcctl_0.0.6_${OS}_${ARCH}.deb
 dpkg --install vpcctl_0.0.2_linux_amd64.deb
 vpcctl --help
 ```
@@ -54,7 +54,7 @@ RedHat:
 ```
 [[ `uname -m` == "aarch64" ]] && ARCH="arm64" || ARCH="amd64"
 OS=`uname | tr '[:upper:]' '[:lower:]'`
-rpm -i https://github.com/bwagner5/vpcctl/releases/download/v0.0.5/vpcctl_0.0.5_${OS}_${ARCH}.rpm
+rpm -i https://github.com/bwagner5/vpcctl/releases/download/v0.0.6/vpcctl_0.0.6_${OS}_${ARCH}.rpm
 ```
 
 Download Binary Directly:
@@ -62,7 +62,7 @@ Download Binary Directly:
 ```
 [[ `uname -m` == "aarch64" ]] && ARCH="arm64" || ARCH="amd64"
 OS=`uname | tr '[:upper:]' '[:lower:]'`
-wget -qO- https://github.com/bwagner5/vpcctl/releases/download/v0.0.5/vpcctl_0.0.5_${OS}_${ARCH}.tar.gz | tar xvz
+wget -qO- https://github.com/bwagner5/vpcctl/releases/download/v0.0.6/vpcctl_0.0.6_${OS}_${ARCH}.tar.gz | tar xvz
 chmod +x vpcctl
 ```
 
