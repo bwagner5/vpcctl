@@ -2,7 +2,7 @@ before:
   hooks:
     - go mod tidy
 builds:
-  - main: ./cmd/*.go
+  - main: ./cmd/
     env:
       - CGO_ENABLED=0
     targets:
