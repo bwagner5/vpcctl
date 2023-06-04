@@ -1,4 +1,4 @@
-# VPC-CTL
+# VPCCTL
 
 VPC CTL is a simple CLI tool to create AWS Virtual Private Clouds (VPC). 
 
@@ -6,7 +6,7 @@ VPC CTL is a simple CLI tool to create AWS Virtual Private Clouds (VPC).
 
 VPCs are the foundation of most cloud deployments. Development in the cloud often requires creating VPCs for testing, especially when using Kubernetes where clusters are often 1:1 with a VPC. 
 
-VPCs are also the most straight forward thing to setup. There are many sub-resources of a VPC that are required to make everything work. 
+VPCs are also not the most straight forward thing to setup. There are many sub-resources of a VPC that are required to make everything work. You could always use CDK, CloudFormation, Terraform, or the AWS Console, but a purpose-built CLI tool is the simplest.
 
 VPC CTL aims to make creating VPCs a breeze.
 
