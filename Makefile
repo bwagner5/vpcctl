@@ -1,3 +1,4 @@
+$(shell git fetch --tags)
 BUILD_DIR ?= $(dir $(realpath -s $(firstword $(MAKEFILE_LIST))))/build
 VERSION ?= $(shell git describe --tags --always --dirty)
 PREV_VERSION ?= $(shell git describe --abbrev=0 --tags `git rev-list --tags --skip=1 --max-count=1`)
