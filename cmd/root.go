@@ -19,7 +19,7 @@ import (
 	"encoding/json"
 	"os"
 
-	"github.com/imdario/mergo"
+	"dario.cat/mergo"
 	"github.com/samber/lo"
 	"github.com/spf13/cobra"
 	"gopkg.in/yaml.v3"
