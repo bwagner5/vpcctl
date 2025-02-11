@@ -169,7 +169,11 @@ func (v Client) createRouteTables(ctx context.Context, subnets []*types.Subnet, 
 }
 
 func (v Client) createNATGW(ctx context.Context, subnets []*types.Subnet, routeTable *types.RouteTable, opts CreateOptions) (*types.NatGateway, error) {
-	// privateSubnets := lo.Filter(subnets, func(subnet *types.Subnet, _ int) bool { return !*subnet.MapPublicIpOnLaunch })
+	privateSubnets := lo.Filter(subnets, func(subnet *types.Subnet, _ int) bool { return !*subnet.MapPublicIpOnLaunch })
+	// do not create a NATGW if there are no private subnets
+	if len(privateSubnets) == 0 {
+		return nil, nil
+	}
 	publicSubnets := lo.Filter(subnets, func(subnet *types.Subnet, _ int) bool { return *subnet.MapPublicIpOnLaunch })
 	eipOut, err := v.ec2Client.AllocateAddress(ctx, &ec2.AllocateAddressInput{
 		TagSpecifications: []types.TagSpecification{
