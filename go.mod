@@ -1,8 +1,8 @@
 module github.com/bwagner5/vpcctl
 
-go 1.23.0
+go 1.23.6
 
-toolchain go1.23.3
+toolchain go1.23.6
 
 require (
 	dario.cat/mergo v1.0.1
