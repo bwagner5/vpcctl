@@ -35,7 +35,7 @@ var (
 		Short: "Delete a VPC",
 		Long:  `Delete a VPC with subresources like subnets, route-tables, etc.`,
 		Args:  cobra.MinimumNArgs(0),
-		Run: func(cmd *cobra.Command, args []string) {
+		Run: func(cmd *cobra.Command, _ []string) {
 			opts, err := ParseConfig(globalOpts, deleteOpts)
 			if err != nil {
 				fmt.Printf("Error parsing config file (%s): %s", globalOpts.ConfigFile, err)

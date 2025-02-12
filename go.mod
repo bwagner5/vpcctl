@@ -1,6 +1,8 @@
 module github.com/bwagner5/vpcctl
 
-go 1.23
+go 1.23.0
+
+toolchain go1.23.3
 
 require (
 	dario.cat/mergo v1.0.1
@@ -25,6 +27,9 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/sts v1.33.14 // indirect
 	github.com/aws/smithy-go v1.22.2 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
+	github.com/kr/pretty v0.3.1 // indirect
+	github.com/rogpeppe/go-internal v1.13.1 // indirect
 	github.com/spf13/pflag v1.0.6 // indirect
 	golang.org/x/text v0.22.0 // indirect
+	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 )

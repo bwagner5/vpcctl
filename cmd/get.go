@@ -42,7 +42,7 @@ var (
 		Short: "Get a VPC",
 		Long:  `Get a VPC with subresources like subnets, route-tables, etc.`,
 		Args:  cobra.MinimumNArgs(0),
-		Run: func(cmd *cobra.Command, args []string) {
+		Run: func(cmd *cobra.Command, _ []string) {
 			opts, err := ParseConfig(globalOpts, getOpts)
 			if err != nil {
 				fmt.Printf("Error parsing config file (%s): %s", globalOpts.ConfigFile, err)

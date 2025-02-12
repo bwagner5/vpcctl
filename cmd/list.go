@@ -30,7 +30,7 @@ var (
 		Short: "List VPCs",
 		Long:  `List VPCs created with vpcctl`,
 		Args:  cobra.MinimumNArgs(0),
-		Run: func(cmd *cobra.Command, args []string) {
+		Run: func(cmd *cobra.Command, _ []string) {
 			cfg, err := config.LoadDefaultConfig(cmd.Context())
 			if err != nil {
 				fmt.Printf("Error getting AWS config: %s", err)
