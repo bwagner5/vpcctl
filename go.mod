@@ -2,8 +2,6 @@ module github.com/bwagner5/vpcctl
 
 go 1.23.6
 
-toolchain go1.23.6
-
 require (
 	dario.cat/mergo v1.0.1
 	github.com/aws/aws-sdk-go-v2 v1.36.1
