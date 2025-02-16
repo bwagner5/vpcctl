@@ -190,7 +190,11 @@ func (v Client) Create(ctx context.Context, opts CreateOptions) (*Details, error
 	if err != nil {
 		return vpcDetails, err
 	}
-	log.Printf("Created NAT Gateway: %s", *vpcDetails.NATGateway.NatGatewayId)
+	if natGW != nil {
+		log.Printf("Created NAT Gateway: %s", *vpcDetails.NATGateway.NatGatewayId)
+	} else {
+		log.Print("Skipping NAT Gateway")
+	}
 	return vpcDetails, nil
 }
 
