@@ -4,7 +4,7 @@ go 1.23.6
 
 require (
 	dario.cat/mergo v1.0.1
-	github.com/aws/aws-sdk-go-v2 v1.36.1
+	github.com/aws/aws-sdk-go-v2 v1.36.2
 	github.com/aws/aws-sdk-go-v2/config v1.29.6
 	github.com/aws/aws-sdk-go-v2/service/ec2 v1.202.4
 	github.com/samber/lo v1.49.1
